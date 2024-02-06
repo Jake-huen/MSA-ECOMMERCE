@@ -58,7 +58,7 @@ public class UserController {
             result.add(new ModelMapper().map(user, ResponseUser.class));
         });
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(result);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @GetMapping("/users/{userId}")
@@ -66,7 +66,7 @@ public class UserController {
         UserDto userDto = userService.getUserByUserId(userId);
         ResponseUser result = new ModelMapper().map(userDto, ResponseUser.class);
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(result);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
 }
