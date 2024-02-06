@@ -18,4 +18,13 @@ public class UserEntity {
     private String userId;
     @Column(nullable = false, unique = true)
     private String encryptedPwd;
+
+    public UserEntity() {}
+
+    public UserEntity(String email, String name, String userId, String encryptedPwd) {
+        this.email = email;
+        this.name = name;
+        this.userId = userId;
+        this.encryptedPwd = encryptedPwd;
+    }
 }
