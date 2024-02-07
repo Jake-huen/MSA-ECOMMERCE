@@ -26,4 +26,4 @@ eureka:
 
 logging:
   level:
-    com.example.orderservice: DEBUG
+    org.example.orderservice: DEBUG
