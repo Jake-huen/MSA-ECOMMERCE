@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: user-service
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
 #  config:
 #    import: classpath:/bootstrap.yml
   h2:
@@ -40,7 +45,7 @@ management:
     web:
       exposure:
         include:
-          refresh, health, beans
+          refresh, health, beans, busrefresh
 
 #token:
 #  expiration_time: 86400000
