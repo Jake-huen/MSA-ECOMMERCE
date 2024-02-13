@@ -48,13 +48,12 @@ public class WebSecurity {
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests((authz) -> authz
-//                                .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
-//                                .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
 //                                .requestMatchers(new AntPathRequestMatcher("/users", "POST")).permitAll()
-//                                .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
                                 .requestMatchers("/**").access(
                                         new WebExpressionAuthorizationManager(
-                                "hasIpAddress('127.0.0.1') or hasIpAddress('192.168.0.90')"))
+                                "hasIpAddress('127.0.0.1') or hasIpAddress('192.168.0.135')"))
                                 .anyRequest().authenticated()
                 )
                 .authenticationManager(authenticationManager)
