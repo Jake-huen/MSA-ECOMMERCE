@@ -1,6 +1,8 @@
 package org.example.userservice.service;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.userservice.client.OrderServiceClient;
 import org.example.userservice.dto.UserDto;
 import org.example.userservice.jpa.UserEntity;
@@ -25,6 +27,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -33,6 +36,8 @@ public class UserServiceImpl implements UserService {
     private final RestTemplate restTemplate;
 
     private final OrderServiceClient orderServiceClient;
+
+
 
     @Override
     public UserDto createUser(UserDto userDto) {
@@ -56,7 +61,20 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
 
         // FeignClient 사용하기
+        /* Feign Exception Handling */
+//        List<ResponseOrder> ordersList = null;
+//        try {
+//            orderServiceClient.getOrders(userId);
+//        } catch (FeignException ex) {
+//            log.error(ex.getMessage());
+//        }
+        /* 에러 핸들링 */
         List<ResponseOrder> ordersList = orderServiceClient.getOrders(userId);
+        userDto.setOrders(ordersList);
+
+        return userDto;
+
+
         // RestTemplate 방법
 //        String orderUrl = String.format(env.getProperty("order_service.url"), userId);
 //        ResponseEntity<List<ResponseOrder>> orderListResponse =
@@ -65,8 +83,8 @@ public class UserServiceImpl implements UserService {
 //                    });
 //
 //        List<ResponseOrder> ordersList = orderListResponse.getBody();
-        userDto.setOrders(ordersList);
-        return userDto;
+//        userDto.setOrders(ordersList);
+//        return userDto;
     }
 
     @Override
