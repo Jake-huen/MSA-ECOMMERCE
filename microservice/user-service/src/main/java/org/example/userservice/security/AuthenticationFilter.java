@@ -79,7 +79,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .setIssuedAt(Date.from(now))
                 .signWith(SignatureAlgorithm.HS512, environment.getProperty("token.secret"))
                 .compact();
-//
+
         res.addHeader("token", token);
         res.addHeader("userId", userDetails.getUserId());
     }
