@@ -1,6 +1,7 @@
 package org.example.userservice.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.userservice.client.OrderServiceClient;
 import org.example.userservice.dto.UserDto;
 import org.example.userservice.jpa.UserEntity;
 import org.example.userservice.jpa.UserRepository;
@@ -31,6 +32,8 @@ public class UserServiceImpl implements UserService {
     private final Environment env;
     private final RestTemplate restTemplate;
 
+    private final OrderServiceClient orderServiceClient;
+
     @Override
     public UserDto createUser(UserDto userDto) {
         userDto.setUserId(UUID.randomUUID().toString());
@@ -52,14 +55,16 @@ public class UserServiceImpl implements UserService {
 
         UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
 
-        String orderUrl = String.format(env.getProperty("order_service.url"), userId);
-        // String orderUrl = "http://127.0.0.1:8000/order-service/%s/orders";
-        ResponseEntity<List<ResponseOrder>> orderListResponse =
-                restTemplate.exchange(orderUrl, HttpMethod.GET, null,
-                    new ParameterizedTypeReference<List<ResponseOrder>>() {
-                    });
-
-        List<ResponseOrder> ordersList = orderListResponse.getBody();
+        // FeignClient 사용하기
+        List<ResponseOrder> ordersList = orderServiceClient.getOrders(userId);
+        // RestTemplate 방법
+//        String orderUrl = String.format(env.getProperty("order_service.url"), userId);
+//        ResponseEntity<List<ResponseOrder>> orderListResponse =
+//                restTemplate.exchange(orderUrl, HttpMethod.GET, null,
+//                    new ParameterizedTypeReference<List<ResponseOrder>>() {
+//                    });
+//
+//        List<ResponseOrder> ordersList = orderListResponse.getBody();
         userDto.setOrders(ordersList);
         return userDto;
     }
