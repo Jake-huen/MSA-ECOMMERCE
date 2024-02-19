@@ -33,6 +33,8 @@ dependencies {
     implementation 'org.modelmapper:modelmapper:2.3.8'
     // maria-db
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.7'
+    // kafka
+    implementation 'org.springframework.kafka:spring-kafka'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
