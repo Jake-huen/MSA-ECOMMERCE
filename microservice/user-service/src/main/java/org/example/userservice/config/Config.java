@@ -1,5 +1,6 @@
 package org.example.userservice.config;
 
+import feign.Capability;
 import feign.Logger;
 import org.example.userservice.error.FeignErrorDecoder;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
