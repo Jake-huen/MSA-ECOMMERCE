@@ -74,12 +74,12 @@ public class OrderController {
         orderList.forEach(v -> {
             result.add(new ModelMapper().map(v, ResponseOrder.class));
         });
-//        try {
-//            Thread.sleep(1000);
-//            throw new Exception("장애 발생");
-//        } catch (InterruptedException exception) {
-//            log.error(exception.getMessage());
-//        }
+        try {
+            Thread.sleep(1000);
+            throw new Exception("장애 발생");
+        } catch (InterruptedException exception) {
+            log.error(exception.getMessage());
+        }
 
 
         log.info("After retrieved orders data");
