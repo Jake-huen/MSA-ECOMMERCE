@@ -21,7 +21,7 @@ spring:
           search-locations: file://${user.home}/Desktop/native-file-repo
         git:
           uri: https://github.com/Jake-huen/spring-cloud-config # file:///Users/kimtaeheon/Desktop/git-local-repo
-          # private repository?? ?? ?? ??
+          # private repository
           #username: Jake-huen
           #password:
 

@@ -5,6 +5,8 @@ import org.example.orderservice.dto.OrderDto;
 import org.example.orderservice.dto.RequestOrder;
 import org.example.orderservice.dto.ResponseOrder;
 import org.example.orderservice.jpa.OrderEntity;
+import org.example.orderservice.messagequeue.KafkaProducer;
+import org.example.orderservice.messagequeue.OrderProducer;
 import org.example.orderservice.service.OrdersService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +25,8 @@ import java.util.List;
 public class OrderController {
     private final Environment env;
     private final OrdersService ordersService;
+    private final KafkaProducer kafkaProducer;
+    private final OrderProducer orderProducer;
 
     @GetMapping("/health_check")
     public String status() {
@@ -35,12 +40,23 @@ public class OrderController {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
+
         OrderDto orderDto = modelMapper.map(orderDetails, OrderDto.class);
-
         orderDto.setUserId(userId);
-
+        /* jpa */
         OrderDto createDto = ordersService.createOrder(orderDto);
-        ResponseOrder returnValue = modelMapper.map(createDto, ResponseOrder.class);
+        ResponseOrder returnValue = modelMapper.map
+        (createDto, ResponseOrder.class);
+
+        /* kafka */
+//        orderDto.setOrderId(UUID.randomUUID().toString());
+//        orderDto.setTotalPrice(orderDetails.getQty() * orderDetails.getUnitPrice());
+
+        /* send this order to the kafka */
+//        kafkaProducer.send("example-catalog-topic", orderDto);
+//        orderProducer.send("orders", orderDto);
+
+//        ResponseOrder returnValue = modelMapper.map(orderDto, ResponseOrder.class);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(returnValue);
     }

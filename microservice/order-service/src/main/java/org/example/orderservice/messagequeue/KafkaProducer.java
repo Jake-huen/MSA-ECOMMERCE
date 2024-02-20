@@ -1,42 +1,34 @@
-package org.example.catalogservice.messagequeue;
+package org.example.orderservice.messagequeue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catalogservice.jpa.CatalogEntity;
-import org.example.catalogservice.jpa.CatalogRepository;
-import org.springframework.kafka.annotation.KafkaListener;
+import org.example.orderservice.dto.OrderDto;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class KafkaConsumer {
+public class KafkaProducer {
 
-    public final CatalogRepository repository;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
-    @KafkaListener(topics = "example-catalog-topic")
-    public void updateQty(String kafkaMessage) {
-        log.info("Kafka Message: -> " + kafkaMessage);
-
-        Map<Object, Object> map = new HashMap<>();
+    public OrderDto send(String topic, OrderDto orderDto) {
         ObjectMapper mapper = new ObjectMapper();
+        String jsonInString = "";
+
         try {
-            map = mapper.readValue(kafkaMessage, new TypeReference<Map<Object, Object>>() {
-            });
+            jsonInString = mapper.writeValueAsString(orderDto);
         } catch (JsonProcessingException exception) {
             exception.printStackTrace();
         }
 
-        CatalogEntity entity = repository.findByProductId((String) map.get("productId"));
-        if (entity != null) {
-            entity.setStock(entity.getStock() - (Integer) map.get("qty"));
-            repository.save(entity);
-        }
+        kafkaTemplate.send(topic, jsonInString);
+        log.info("Kafka Producer sent data from the Order microservice: " + orderDto);
+
+        return orderDto;
     }
+
 }

@@ -10,6 +10,8 @@ import org.example.userservice.jpa.UserRepository;
 import org.example.userservice.vo.ResponseOrder;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
@@ -34,8 +36,8 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final Environment env;
     private final RestTemplate restTemplate;
-
     private final OrderServiceClient orderServiceClient;
+    private final CircuitBreakerFactory circuitBreakerFactory;
 
 
 
@@ -68,10 +70,14 @@ public class UserServiceImpl implements UserService {
 //        } catch (FeignException ex) {
 //            log.error(ex.getMessage());
 //        }
-        /* 에러 핸들링 */
-        List<ResponseOrder> ordersList = orderServiceClient.getOrders(userId);
-        userDto.setOrders(ordersList);
+        /* 에러 핸들링 ErrorDecoder */
+//        List<ResponseOrder> ordersList = orderServiceClient.getOrders(userId);
+//        userDto.setOrders(ordersList);
 
+        CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
+        List<ResponseOrder> orderList = circuitbreaker.run(() -> orderServiceClient.getOrders(userId),
+                throwable -> new ArrayList<>());
+        userDto.setOrders(orderList);
         return userDto;
 
 
