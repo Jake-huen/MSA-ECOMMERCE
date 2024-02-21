@@ -47,7 +47,7 @@ management:
     web:
       exposure:
         include:
-          refresh, health, beans, busrefresh
+          health, httptrace, info, metrics, prometheus
 
 logging:
   pattern:
