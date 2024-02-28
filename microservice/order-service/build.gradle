@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'org.example'
-version = '0.0.1-SNAPSHOT'
+version = '1.0'
 
 java {
     sourceCompatibility = '17'
@@ -23,6 +23,10 @@ repositories {
 
 ext {
     set('springCloudVersion', "2023.0.0")
+}
+
+jar {
+    enabled = false
 }
 
 dependencies {

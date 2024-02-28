@@ -48,15 +48,14 @@ public class OrderController {
         orderDto.setUserId(userId);
         /* jpa */
         OrderDto createDto = ordersService.createOrder(orderDto);
-        ResponseOrder returnValue = modelMapper.map
-        (createDto, ResponseOrder.class);
+        ResponseOrder returnValue = modelMapper.map(createDto, ResponseOrder.class);
 
         /* kafka */
 //        orderDto.setOrderId(UUID.randomUUID().toString());
 //        orderDto.setTotalPrice(orderDetails.getQty() * orderDetails.getUnitPrice());
 
         /* send this order to the kafka */
-//        kafkaProducer.send("example-catalog-topic", orderDto);
+        kafkaProducer.send("example-catalog-topic", orderDto); // 현재 수량 정보 전달
 //        orderProducer.send("orders", orderDto);
 
 //        ResponseOrder returnValue = modelMapper.map(orderDto, ResponseOrder.class);
@@ -74,12 +73,12 @@ public class OrderController {
         orderList.forEach(v -> {
             result.add(new ModelMapper().map(v, ResponseOrder.class));
         });
-        try {
-            Thread.sleep(1000);
-            throw new Exception("장애 발생");
-        } catch (InterruptedException exception) {
-            log.error(exception.getMessage());
-        }
+//        try {
+//            Thread.sleep(1000);
+//            throw new Exception("장애 발생");
+//        } catch (InterruptedException exception) {
+//            log.error(exception.getMessage());
+//        }
 
 
         log.info("After retrieved orders data");

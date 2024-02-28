@@ -53,7 +53,7 @@ public class WebSecurity {
 //                                .requestMatchers(new AntPathRequestMatcher("/users", "POST")).permitAll()
                                 .requestMatchers("/**").access(
                                         new WebExpressionAuthorizationManager(
-                                "hasIpAddress('127.0.0.1') or hasIpAddress('192.168.0.135')"))
+                                "hasIpAddress('127.0.0.1') or hasIpAddress('192.168.0.135') or hasIpAddress('172.18.0.5')" ))
                                 .anyRequest().authenticated()
                 )
                 .authenticationManager(authenticationManager)
